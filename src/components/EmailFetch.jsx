@@ -53,10 +53,21 @@ const EmailFetch = () => {
           localStorage.setItem('favoriteEmails', JSON.stringify([...newFavorites]));
         };
 
+        const isNoReplyEmail = (email) => {
+          const senderEmail = email.from?.email || '';
+          const senderName = email.from?.name || '';
+          // Check for common no-reply patterns
+          const noReplyPatterns = ['noreply', 'no-reply', 'donotreply', 'do-not-reply', 'notification'];
+          return noReplyPatterns.some(pattern =>
+            senderEmail.toLowerCase().includes(pattern) || senderName.toLowerCase().includes(pattern)
+          );
+        };
+
         const filteredEmails = emails.filter(email => {
           if (filter === 'favorites') return favoriteEmails.has(email.id);
           if (filter === 'read') return readEmails.has(email.id);
           if (filter === 'unread') return !readEmails.has(email.id);
+          if (filter === 'no-reply') return isNoReplyEmail(email);
           return true;
         });
 

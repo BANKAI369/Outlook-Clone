@@ -4,7 +4,6 @@ function FilterButtons({ currentFilter, onFilterChange }) {
     { label: 'Unread', value: 'unread' },
     { label: 'Read', value: 'read' },
     { label: 'Favorites', value: 'favorites' },
-    { label: 'MyFav', value: 'myfav' },
     { label:'No Reply', value:'no-reply' }
   ];
 

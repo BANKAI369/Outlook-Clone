@@ -1,25 +1,21 @@
 import { useState, useEffect } from 'react';
 import { Star } from 'lucide-react';
 
-function EmailBody({emails, emailId, isFavorite, onToggleFavorite}) {  // ✏️ CHANGED: Added 'emails' prop
+function EmailBody({emails, emailId, isFavorite, onToggleFavorite}) {  
   const [emailData, setEmailData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchEmailBody();
-  }, [emailId, emails]);  // ✏️ CHANGED: Added 'emails' to dependency array
+  }, [emailId, emails]); 
 
   const fetchEmailBody = async () => {
     try {
       setLoading(true);
-      // ✏️ CHANGED: Get the email from the list (has from, subject, date)
       const emailFromList = emails?.find(e => e.id === emailId);
-      
-      // ✏️ CHANGED: Fetch the full body from the detail API
+
       const response = await fetch(`https://flipkart-email-mock.now.sh/?id=${emailId}`);
       const bodyData = await response.json();
-      
-      // ✏️ CHANGED: Merge list data with body data to get sender, subject, date + body
       const merged = {
         ...emailFromList,
         ...bodyData,
