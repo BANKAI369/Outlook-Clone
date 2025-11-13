@@ -6,6 +6,9 @@ function EmailList({
   readEmails,
   favoriteEmails,
   onEmailClick,
+  onDelete,
+  onRestore,
+  currentFilter,
   loading,
 }) {
   if (loading) {
@@ -34,6 +37,9 @@ function EmailList({
           isRead={readEmails.has(email.id)}
           isFavorite={favoriteEmails.has(email.id)}
           onClick={() => onEmailClick(email.id)}
+          onDelete={onDelete}
+          onRestore={onRestore}
+          currentFilter={currentFilter}
         />
       ))}
     </div>

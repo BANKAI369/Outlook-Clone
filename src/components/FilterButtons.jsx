@@ -4,7 +4,8 @@ function FilterButtons({ currentFilter, onFilterChange }) {
     { label: 'Unread', value: 'unread' },
     { label: 'Read', value: 'read' },
     { label: 'Favorites', value: 'favorites' },
-    { label:'No Reply', value:'no-reply' }
+    { label:'No Reply', value:'no-reply' },
+    { label: 'Trash', value: 'trash' },
   ];
 
   return (
