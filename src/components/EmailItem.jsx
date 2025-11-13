@@ -1,6 +1,6 @@
-import { Star } from 'lucide-react';
+import { Star, Trash, RotateCcw } from 'lucide-react';
 
-function EmailItem({ email, isSelected, isRead, isFavorite, onClick }) {
+function EmailItem({ email, isSelected, isRead, isFavorite, onClick, onDelete, onRestore, currentFilter }) {
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     const day = String(date.getDate()).padStart(2, '0');
@@ -34,19 +34,38 @@ function EmailItem({ email, isSelected, isRead, isFavorite, onClick }) {
         <div className={`w-12 h-12 rounded-full text-white flex items-center justify-center text-xl font-medium ${
           isFavorite ? 'bg-yellow-400' : 'bg-pink-500'
         }`}>
-          {getInitial(email.from.name)}
+          {getInitial(email.from?.name || email.from?.email || '')}
         </div>
       </div>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2 mb-1">
           <p className="text-sm text-gray-600">
-            From: <span className="font-semibold text-gray-800">{email.from.name}</span>{' '}
-            <span className="text-gray-500">&lt;{email.from.email}&gt;</span>
+            From: <span className="font-semibold text-gray-800">{email.from?.name || 'Unknown'}</span>{' '}
+            <span className="text-gray-500">&lt;{email.from?.email || ''}&gt;</span>
           </p>
-          {isFavorite && (
-            <Star size={18} className="fill-yellow-400 text-yellow-400 flex-shrink-0" />
-          )}
+          <div className="flex items-center gap-2">
+            {isFavorite && (
+              <Star size={18} className="fill-yellow-400 text-yellow-400 flex-shrink-0" />
+            )}
+            {currentFilter === 'trash' ? (
+              <button
+                onClick={(e) => { e.stopPropagation(); onRestore && onRestore(email.id); }}
+                title="Restore"
+                className="text-gray-500 hover:text-green-600"
+              >
+                <RotateCcw size={16} />
+              </button>
+            ) : (
+              <button
+                onClick={(e) => { e.stopPropagation(); onDelete && onDelete(email.id); }}
+                title="Delete"
+                className="text-gray-500 hover:text-red-600"
+              >
+                <Trash size={16} />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="mb-1">

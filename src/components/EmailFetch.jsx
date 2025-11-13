@@ -9,17 +9,24 @@ const EmailFetch = () => {
         const [filter, setFilter] = useState('all');
         const [readEmails, setReadEmails] = useState(new Set());
         const [favoriteEmails, setFavoriteEmails] = useState(new Set());
+        const [trashEmails, setTrashEmails] = useState(new Set());
         const [loading, setLoading] = useState(true);
       
         useEffect(() => {
           const savedRead = localStorage.getItem('readEmails');
           const savedFavorites = localStorage.getItem('favoriteEmails');
+          const savedTrash = localStorage.getItem('trashEmails');
       
           if (savedRead) setReadEmails(new Set(JSON.parse(savedRead)));
           if (savedFavorites) setFavoriteEmails(new Set(JSON.parse(savedFavorites)));
+          if (savedTrash) setTrashEmails(new Set(JSON.parse(savedTrash)));
       
           fetchEmails();
         }, []);
+        useEffect(() => {
+            localStorage.setItem('trashEmails', JSON.stringify([...trashEmails]));
+        }, [trashEmails]);
+
       
         const fetchEmails = async () => {
           try {
@@ -63,11 +70,29 @@ const EmailFetch = () => {
           );
         };
 
+        const deleteEmail = (emailId) =>{
+          const newTrash = new Set(trashEmails);
+          newTrash.add(emailId);
+          setTrashEmails(newTrash);
+          localStorage.setItem('trashEmails', JSON.stringify([...newTrash]));
+        }
+
+        const restoreFromTrash = (emailId) =>{
+          const newTrash = new Set(trashEmails);
+          newTrash.delete(emailId);
+          setTrashEmails(newTrash);
+          localStorage.setItem('trashEmails', JSON.stringify([...newTrash]));
+        }
+
         const filteredEmails = emails.filter(email => {
+          // Hide trashed emails unless viewing trash
+          if (filter !== 'trash' && trashEmails.has(email.id)) return false;
+          
           if (filter === 'favorites') return favoriteEmails.has(email.id);
           if (filter === 'read') return readEmails.has(email.id);
           if (filter === 'unread') return !readEmails.has(email.id);
           if (filter === 'no-reply') return isNoReplyEmail(email);
+          if (filter === 'trash') return trashEmails.has(email.id);
           return true;
         });
 
@@ -84,6 +109,9 @@ const EmailFetch = () => {
               readEmails={readEmails}
               favoriteEmails={favoriteEmails}
               onEmailClick={handleEmailClick}
+              onDelete={deleteEmail}
+              onRestore={restoreFromTrash}
+              currentFilter={filter}
               loading={loading}
             />
           </div>
@@ -95,6 +123,7 @@ const EmailFetch = () => {
                 emailId={selectedEmail}
                 isFavorite={favoriteEmails.has(selectedEmail)}
                 onToggleFavorite={toggleFavorite}
+                onDeleteEmail={deleteEmail}
               />
             </div>
           )}

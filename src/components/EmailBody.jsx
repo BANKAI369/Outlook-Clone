@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Star } from 'lucide-react';
+import { Star, Trash } from 'lucide-react';
 
-function EmailBody({emails, emailId, isFavorite, onToggleFavorite}) {  
+function EmailBody({emails, emailId, isFavorite, onToggleFavorite, onDeleteEmail }) {  
   const [emailData, setEmailData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -99,6 +99,9 @@ function EmailBody({emails, emailId, isFavorite, onToggleFavorite}) {
                 : 'text-gray-400 hover:text-gray-600'
             }`}
           />
+        </button>
+        <button onClick={() => onDeleteEmail(emailId)}>
+          <Trash size = {28} className="text-gray-400 hover:text-gray-600 transition-all hover:scale-110" />
         </button>
       </div>
       <div

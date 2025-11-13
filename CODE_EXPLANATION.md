@@ -122,7 +122,7 @@ const isNoReplyEmail = (email) => {
 
 **6. `filteredEmails` - Applies active filter**
 ```javascript
-const filteredEmails = emails.filter(email => {
+ const filteredEmails = emails.filter(email => {
   if (filter === 'favorites') return favoriteEmails.has(email.id);
   if (filter === 'read') return readEmails.has(email.id);
   if (filter === 'unread') return !readEmails.has(email.id);
