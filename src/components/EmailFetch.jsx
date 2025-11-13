@@ -52,13 +52,14 @@ const EmailFetch = () => {
           setFavoriteEmails(newFavorites);
           localStorage.setItem('favoriteEmails', JSON.stringify([...newFavorites]));
         };
-      
+
         const filteredEmails = emails.filter(email => {
           if (filter === 'favorites') return favoriteEmails.has(email.id);
           if (filter === 'read') return readEmails.has(email.id);
           if (filter === 'unread') return !readEmails.has(email.id);
           return true;
         });
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto p-6">
@@ -79,6 +80,7 @@ const EmailFetch = () => {
           {selectedEmail && (
             <div className="w-2/3">
               <EmailBody
+                emails={emails}
                 emailId={selectedEmail}
                 isFavorite={favoriteEmails.has(selectedEmail)}
                 onToggleFavorite={toggleFavorite}
