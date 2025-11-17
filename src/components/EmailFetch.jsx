@@ -2,6 +2,7 @@ import EmailList from './EmailList';
 import EmailBody from './EmailBody';
 import FilterButtons from './FilterButtons';
 import { useState, useEffect } from 'react';
+import { Search } from 'lucide-react';
 
 const EmailFetch = () => {
         const [emails, setEmails] = useState([]);
@@ -11,6 +12,7 @@ const EmailFetch = () => {
         const [favoriteEmails, setFavoriteEmails] = useState(new Set());
         const [trashEmails, setTrashEmails] = useState(new Set());
         const [loading, setLoading] = useState(true);
+        const [searchQuery, setSearchQuery] = useState('');
       
         useEffect(() => {
           const savedRead = localStorage.getItem('readEmails');
@@ -79,7 +81,7 @@ const EmailFetch = () => {
 
         const restoreFromTrash = (emailId) =>{
           const newTrash = new Set(trashEmails);
-          newTrash.delete(emailId);
+          newTrash.delete(emailId); 
           setTrashEmails(newTrash);
           localStorage.setItem('trashEmails', JSON.stringify([...newTrash]));
         }
@@ -94,10 +96,44 @@ const EmailFetch = () => {
           if (filter === 'no-reply') return isNoReplyEmail(email);
           if (filter === 'trash') return trashEmails.has(email.id);
           return true;
+        }).filter(email => {
+          // Search filter
+          if (!searchQuery) return true;
+          const query = searchQuery.toLowerCase();
+          const subject = email.subject?.toLowerCase() || '';
+          const senderName = email.from?.name?.toLowerCase() || '';
+          const senderEmail = email.from?.email?.toLowerCase() || '';
+          const preview = email.preview?.toLowerCase() || '';
+          
+          return subject.includes(query) || senderName.includes(query) || senderEmail.includes(query) || preview.includes(query);
         });
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-3xl font-bold text-gray-800">Mailbox</h1>
+            <div className="text-sm text-gray-600">
+              {filteredEmails.length} email{filteredEmails.length !== 1 ? 's' : ''}
+            </div>
+          </div>
+          
+          {/* Search Bar */}
+          <div className="relative">
+            <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+            <input
+              type="text"
+              placeholder="Search by subject, sender, or content..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+      </div>
+
       <div className="container mx-auto p-6">
         <FilterButtons currentFilter={filter} onFilterChange={setFilter} />
 
