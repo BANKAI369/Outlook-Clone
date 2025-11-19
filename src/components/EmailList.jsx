@@ -10,6 +10,7 @@ function EmailList({
   onRestore,
   currentFilter,
   loading,
+  onEmptyTrash
 }) {
   if (loading) {
     return (
@@ -29,6 +30,9 @@ function EmailList({
 
   return (
     <div className="space-y-4">
+      {currentFilter === 'trash' && (
+        <button onClick={onEmptyTrash} className="mb-4 px-4 py-2 border border-red-500 text-red-500 rounded hover:bg-red-600 hover:text-white">Empty Trash</button>
+      )}
       {emails.map(email => (
         <EmailItem
           key={email.id}
@@ -40,6 +44,7 @@ function EmailList({
           onDelete={onDelete}
           onRestore={onRestore}
           currentFilter={currentFilter}
+
         />
       ))}
     </div>

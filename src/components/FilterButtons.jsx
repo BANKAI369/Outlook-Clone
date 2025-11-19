@@ -1,11 +1,11 @@
-function FilterButtons({ currentFilter, onFilterChange }) {
+function FilterButtons({ currentFilter, onFilterChange}) {
   const filters = [
     { label: 'All', value: 'all' },
     { label: 'Unread', value: 'unread' },
     { label: 'Read', value: 'read' },
     { label: 'Favorites', value: 'favorites' },
-    { label:'No Reply', value:'no-reply' },
-    { label: 'Trash', value: 'trash' },
+    { label: 'trash', value: 'trash' }
+ 
   ];
 
   return (
